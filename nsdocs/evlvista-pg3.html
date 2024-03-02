@@ -1,0 +1,138 @@
+<html>
+
+<head>
+    <title>EnvisaLink-HW Plugin Release Notes</title>
+    <meta name="color-scheme" content="dark light">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="envisalink-hw">EnvisaLink-HW</h1>
+    <hr>
+    <p>A plugin for Polyglot v3 (PG3) that interfaces with a Honeywell Vista series alarm panel through EnvisaLink™
+        EVL-3/4 and DUO™ adapaters from EyezOn. See <a href="http://www.eyezon.com/">http://www.eyezon.com/</a> for more
+        information.</p>
+    <h3 id="prerequisites">Prerequisites</h3>
+    <p>Before installing the plugin, make sure your EnvisaLink device is connected to your compatible
+        Honeywell/Ademco Vista alarm panel and your home network and is accessible via a web browser at
+        <a href="http://envisalink.local">http://envisalink.local</a> or http://&lt;device IP>. You will need to know the
+            user ID (&quot;user&quot;) and password (defaults to &quot;user&quot;) for the EnvisaLink device. In addition,
+            make sure that the additional programming steps for your alarm panel have been performed to ensure full functionality with the
+            EnvisaLink device, as outlined in the installation instructions. The installation instructions may
+            be found here (last verified 2022-09-28):</p>
+    <p><a href="https://www.eyez-on.com/EZMAIN/EyezonEnvisalinkHoneywellInstallationGuide2018.pdf">https://www.eyez-on.com/EZMAIN/EyezonEnvisalinkHoneywellInstallationGuide2018.pdf</a></p>
+    <h3 id="instructions-for-installation-of-node-server">Instructions for installation of plugin:</h3>
+    <p>From the Polyglot Dashboard:</p>
+    <ol>
+        <li>Install the EnvisaLink-HW plugin from the PG3x Plugin Store.</li>
+        <li>In the PG3x Dashboard, select the installed plugin and then add/modify the following required Custom
+            Configuration Parameters under Configuration (note that the keys should automatically be added for
+            required parameters):
+            <ul>
+                <li>key: hostname, value: locally accessible hostname or IP address of EnvisaLink or DUO device (e.g.,
+                    &quot;envisalink.local&quot; or &quot;192.168.1.145&quot;)</li>
+                <li>key: password, value: password for EnvisaLink device</li>
+                <li>key: usercode, value: user code for disarming alarm panel (e.g., &quot;5555&quot;)</li>
+            </ul>
+        </li>
+        <li>You can also add the following optional Configuration Parameters under Configuration:<ul>
+                <li>key: numpartitions, value: number of partition nodes to generate (defaults to 1)</li>
+                <li>key: numzones, value: number of zone nodes to generate (defaults to 8)</li>
+                <li>key: disablewatchdog, value: 0 or 1 for whether EyezOn cloud service watchdog timer should be
+                    disabled (defaults to 0 - not disabled)</li>
+                <li>key: zonetimerdumpflag, value: numeric flag indicating whether dumping of the zone timers should be
+                    done on shortpoll (1), longpoll (2), or disabled altogether (0) (defaults to 1 - shortpoll)</li>
+                <li>key: smartzonetracking, value: 0 or 1 for whether plugin should use a heuristic to track zone
+                    status (open, closed) or just rely on EnvisaLink (defaults to 0 - do not track)</li>
+            </ul>
+        </li>
+    </ol>
+    <p><strong>PLEASE NOTE</strong>: Once the required configuration parameters have been saved, the plugin will create
+        the panel, partition, and zone nodes in the next shortpoll event, and then attempt to connect to the EnvisaLink
+        device and update all of the panel, partition, and zone states over multiple, subsequent shortpoll events. It may
+        take two or three minutes depending on the shortpoll interval before all nodes and states are reflected properly in
+        IoX, so please be patient. Check the Polyglot Dashboard for notices regarding bad configuration parameters and
+        connection failure conditions.</p>
+    <h3 id="using-the-node-server-events-commands">Using the plugin events (commands)</h3>
+    <p>The nodes of the EnvisaLink-Vista Plugin generate the following incoming commands to IoX, allowing the nodes
+        to be added as controllers to scenes and the commands to be used as triggers in programs:</p>
+    <p>PARTITION</p>
+    <ul>
+        <li>Sends a <em>DON</em> (&quot;Alarm Triggered&quot;) command when the partition is alarming</li>
+        <li>Sends a <em>DOF</em> (&quot;Alarm Restored&quot;) command when the partition is disarmed</li>
+    </ul>
+    <p>PANEL</p>
+    <ul>
+        <li>Sends an <em>AWAKE</em> (&quot;Heartbeat&quot;) command periodically for heartbeat monitoring</li>
+    </ul>
+    <h3 id="notes-for-latest-version-v314">Notes for latest version (v3.1.4)</h3>
+    <ol>
+        <li>Known issues:</li>
+    </ol>
+    <ul>
+        <li>On Entry Delay (but not Exit Delay?) any Battery Trouble status will vacillate between True and False every
+            couple of seconds due to the seemingly random nature of the keypad update messages that the plugin relies
+            on for much of its state tracking.</li>
+    </ul>
+    <ol start="2">
+        <li>If the connection to the EnvisaLink is lost, or if the plugin doesn&#39;t hear from the EnvisaLink for
+            20
+            seconds, then the connection is reset and the plugin will attempt reconnect on the next short poll and
+            every subsequent short poll until connection is reestablished or the plugin is shutdown.</li>
+        <li>Any change to &quot;usercode&quot;, &quot;disablewatchdog&quot;, &quot;zonetimerdumpflag&quot;, or
+            &quot;smartzonetracking&quot; parameters while the plugin is running should take effect immediately
+            (i.e.
+            at next time the related functions run). Any change to the &quot;hostname&quot; or &quot;password&quot;
+            parameters while the plugin is running will be used on the next conection attempt to the EnvisaLink,
+            whether the initial connection or a reconnect. If you change the &quot;numpartitions&quot; or
+            &quot;numzones&quot; parameters after the AlarmPanel node has been created, you must restart the plugin for
+            these new parameter values to take effect.</li>
+        <li>If your EnvisaLink is firewalled and can not connect to the EyezOn web service, then the EnvisaLink will reboot
+            every 20 minutes (&quot;Watchdog Timer&quot;) in order to try and reestablish the connection to the web service.
+            This will kill the connection to the plugin as well and it will (attempt to) reconnect on the next short
+            poll. If you set the &quot;diablewatchdog&quot; configuration setting to 1, the plugin will send a periodic
+            poll to the EnvisaLink to reset the Watchdog Timer so that the EnvisaLink won&#39;t reboot. The poll is sent
+            every long poll if the &quot;diablewatchdog&quot; configuration parameter is set, so the &quot;longpoll&quot;
+            configuration setting needs to be less than 1200 seconds (20 minutes).</li>
+        <li>The zone timers (&quot;Time Closed&quot;) represent the time since the last closing of the zone, in seconds, and
+            are calculated in 5 second intervals. The timers have a maximum value of 327675 seconds (91 hours) and won&#39;t
+            count up beyond that. The timing of the zone timer updates is based on the configured zonetimerdumpflag
+            parameter (defaults to every short poll). </li>
+        <li>With SmartZoneTracking enabled, the plugin keeps up with the state of zones (open, closed) instead of
+            relying on the EnvisaLink&#39;s zone state tracking. States for bypassed zones show as &quot;Unknown.&quot; If
+            the feature is disabled, then the plugin relies on the zone state tracking in the EnvisaLink. Either way,
+            zone states are squirrely. This is why the Zone nodes don't send DON and DOF commands on opening and closing,
+            respectively, like those of the EnvisaLink DSC plugin do.</li>
+        <li>Bypass and SmartZoneTracking (probably) only work for zones in partition 1. The behavior for zones in other
+            partitions is undefined.</li>
+    </ol>
+    <p>For discussion and feedback, please use the Universal Devices Forums here:
+        <a  href="https://forum.universal-devices.com/forum/390-envisalink-hw/">https://forum.universal-devices.com/forum/390-envisalink-hw/</a>.
+    </p>
+    <h3 id="version-history">Version History</h3>
+    <p>v3.1.4 - Improved robustness (2024-03-02)</p>
+    <ul>
+        <li>refactored code to utilize latest nslib library</li>
+        <li>added PG3-managed Plugin Status</li>
+        <li>implemented periodic heartbeat (AWAKE command) to IoX</li>
+        <li>if monitoring thread in API fails or stops, it will be restarted in next shortpoll</li>
+        <li>if malformed message data is received from EnvisaLink, the command message is ignored</li>
+        <li>don't log zone state commands (81) as unhandled when smartzonetracking is enabled</li>
+    </ul>
+    <p>v3.0.3 - Initial Release (2022-09-28)</p>
+    <ul>
+        <li>Converted envisalink-polyglotv2 to PG3 API</li>
+        <li>Refactored nodeserver startup and node creation to account for misordering of node creation</li>
+        <li>removed &quot;Alarming&quot; zone state and added &quot;Last Alarm Zone&quot; to Partition node instead</li>
+        <li>changed partition states and arming commands to be Vista specific</li>
+        <li>fixed alternating between NOT-READY and ALARM-IN-MEMORY states over consecutive keypad updates</li>
+        <li>added version number passed in poly.start() and removed server.json</li>
+        <li>fixed processing of stop() events to properly shutdown nodeserver</li>
+    </ul>
+</body>
+
+</html>
