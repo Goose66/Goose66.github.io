@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>   
+
+        // url and headers for IoX REST API
+        //const ioxRESTUrl = 'http://test-polisy:8080/rest/nodes/n014_bsy0mgj81auew';
+        // use local-cors-proxy to avoid CORS issues (must run "npx lcp --proxyUrl http://test-polisy:8080  --credentials" in a separate terminal window first)
+        const ioxRESTUrl = 'http://localhost:8010/proxy/rest/nodes/n014_bsy0mgj81auew';
+
+        // periodically poll the REST API for the latest data
+        //setInterval(pollIoX, 1000);
+
+        // poll the REST API
+        async function pollIoX() {
+            let ioxAPI = new XMLHttpRequest();
+            ioxAPI.open("GET", ioxRESTUrl, false);
+            ioxAPI.setRequestHeader("Accept", "text/xml");
+            ioxAPI.setRequestHeader("Authorization", "Basic " + btoa("admin:admin"));
+            ioxAPI.send();
+
+            // handle the response
+            if (ioxAPI.status === 200) {
+                handlePollResponse(ioxAPI.response);
+            }
+        }
+        
+        function handlePollResponse(response) {
+            $xml = $xmlDoc;
+            $temp = $xml.find('ST');
+            console.log("Temp: " + $temp.text());
+        }
+    </script>
+    <head>
+        <title>UD Mobile Custom Tile Test Page</title>
+        <!-- link rel="stylesheet" type="text/css" href="udm_tiles.css" -->
+    </head>
+    <body>
+        <div id="tileflow" width="380">
+            Hello World<br/>
+            <div src="udm_tiles/example-tile_height=180&span=3.html" style="height: 180px; width: 380px;"></div>
+        </div>
+    </body>
+</html>
