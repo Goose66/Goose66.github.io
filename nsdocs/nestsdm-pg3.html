@@ -51,47 +51,7 @@
         </ol>
         <h3 id="notes-for-latest-version-v013">Notes for latest version (v0.1.3):</h3>
         <ol>
-            <li>This plugin requires at least version 3.1.20 of PG3/PG3x and version 5.6.2 of IoX (in order to ensure the local
-                MQTT broker is installed).</li>
-            <li>The GDO nodes generate &quot;Open&quot; (DON) commands when the door status changes from &quot;Closed&quot; to
-                &quot;Open&quot; or &quot;Opening&quot;, and &quot;Close&quot; (DOF) commands when the status changes from
-                anything to &quot;Closed.&quot; The Light nodes similarly generate &quot;On&quot; (DON) and &quot;Off&quot;
-                (DOF) commands when the light status switches to &quot;On&quot; or &quot;Off,&quot; respectively. These commands
-                are only generated if the status change results from an external control signal (i.e., not a command from IoX
-                through the plugin).</li>
-            <li>The GDO nodes generate a &quot;Motion&quot; (DON3) command when motion is detected. The &quot;Motion&quot; state
-                is also changed to &quot;Detected&quot;. The plugin will change the &quot;Motion&quot; state back to
-                &quot;Clear&quot; 60 seconds after the last motion detection event.</li>
-            <li>The Discovery process waits 5 seconds for all HA discovery messages to be processed from the MQTT broker and it
-                may take another several seconds to process the retained states while the new nodes are added. Accordingly,
-                after you click the &quot;Discover&quot; button, please wait 15+ seconds for the nodes to be created in IoX and
-                for the initial state values to be processed before trying again or logging an error.</li>
-            <li>The plugin will discover your devices based on the Home Assistant (HA) discovery process, including the base
-                MQTT topic (&quot;topic prefix&quot;) for status and command messages. If you want to set a topic prefix for
-                your ratgdo devices to support other environments, do so before performing the Discovery process, or you will
-                have to delete your nodes and rediscover them after making any such changes.</li>
-            <li>Version of the ratgdo firmware earlier than 2.5.8 provide the same configuration information in discovery
-                (cover, light, and binary_sensor (obstruction) components) whether the ratgdo can sense or control all these
-                aspects of your GDO or not. Therefore, the plugin may add a garage door opener node AND a light node for each
-                discovered ratgdo device. The light node may simply display &quot;Unknown&quot; for light status and the light
-                commands may not be functional. Similarly, the obstruction, lock, and motion states of the garage door opener
-                node may read &quot;Unknown&quot; and the corresponding commands may not work. A request has been made to the
-                developer to update the firmware to return the &quot;Garage Door Control Protocol&quot; configuration setting,
-                which will allow the plugin to more appropriately add or remove these non-working states. In the meantime, you
-                can simply delete the light node (in the PG3 Dashboard) after discovery if it doesn&#39;t function and you
-                don&#39;t want it.</li>
-            <li>Door state, Light state, Lock state, and Obstruction state should all work for Security + 2.0 doors. Motion
-                state should work if you have a compatible wall control pad with a motion detector. Door state, Light State, and
-                Lock state should work for Security + 1.0 doors. Only Door state currently works for &quot;Dry Contact&quot;
-                mode doors.</li>
-            <li>The plugin supports use of an alternate MQTT broker other than the local (Polisy/eISY) MQTT broker. To use an
-                alternate MQTT broker, add or modify the following optional Custom Configuration Parameters under Configuration:
-            </li>
-        </ol>
-        <ol start="10">
-            <li>If upgrading your plugin from a version earlier than v3.1.4, you will need to delete your existing GDO and Light
-                nodes (in the PG3 Dashboard) and then perform the Discovery process again. However, the node addresses of the
-                nodes will remain the same, so any programs you have should continue to work without modification.</li>
+            <li>Notes to come...</li>
         </ol>
         <h3 id="version-history">Version history:</h3>
         <p>v0.1.3 - Testing Release (2024-04-05)</p>
