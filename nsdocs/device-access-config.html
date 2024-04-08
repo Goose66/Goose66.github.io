@@ -1,0 +1,161 @@
+<html>
+    <head>
+        <title>Google Device Access Project Setup</title>
+        <meta name="color-scheme" content="dark light">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="device-access-configuration">Google Cloud and Device Access Project Setup and Configuration</a></h1>
+        <p>In order to use the Non-production (Beta) version of the NestSDM plugin, you must first create a Google Cloud
+            project with the SDM and Pub/Sub APIs enabled, create and configure an OAuth Client for the Google Cloud
+            project, and then create a Google Device Access project and configure it with the OAuth Client and enable
+            events processing. Step-by-step instructions follow, but please review the following notes before getting
+            started:
+            <ul>
+                <li>These instructions are based on the current state of the Google Cloud and Device Access consoles as
+                    of the time of this writing. Google may change the console layout and configuration steps at any time,
+                    so please refer to the Google documentation for the most current information. These steps are adpated
+                    for the NestSDM Plugin from the Google Device Access Getting Started Guide which can be found here:
+                    <a href="https://developers.google.com/nest/device-access/get-started">Get Started &nbsp;|&nbsp; Device
+                    Access &nbsp;|&nbsp; Google for Developers</a></li>
+                <li>You should have already activated your Nest devices in the Google Home app using your Google account.
+                    Note that legacy Nest accounts are not supported. You should be using the same Google Account ID 
+                    (email address) for accesing the Google Cloud and Google Device Acccess consoles and creating the 
+                    relative projects as you used in activating your Nest devices in the Google Home app.</li>
+                <li>The Google Cloud Platform (GCP) and the Google Device Access Console currently appear to be somewhat
+                    separate and isolated platforms, so the configuration will at times appear to  be disjointed. It also
+                    appears to be important to do these steps in order for everything to work correctly.</li>
+                <li>I suggest having Notepad (or Mac equivalent) open during the configuration so that you can copy and
+                    paste the project ID, GCP project ID, OAuth Client ID, and OAuth Client Secret from the various console
+                    pages as you go for setting the required Custom Configuration Parameters in the NestSDM plugin once
+                    everything is setup.</li>
+                <li>If you have already been using Home Assistant (HA) with your Google Nest devices, you may already have
+                    the required Google Cloud and Google Device Access projects setup and configured, and these steps are not 
+                    necessary. See the Release Notes for the NestSDM Plugin for details.</li>
+            </ul></p>
+        <h3>Step 1 - Register for Device Access (Device Access Console)</h3>
+        <p>Before creating your projects, you must register for Device Access. Registration includes payment of a one-time
+            fee (US$5) per account. Registration is done in the Google Device Access Console. You can access the Device
+            Access Console here: <a href="https://console.nest.google.com/device-access" target="_blank">Device Access Console</a>. You will
+            be asked to agree to the terms of service and such and then register and pay the fee if this is your first time
+            in the Device Access Console.</p>            
+        <h3>Step 2 - Use the Wizard to Set up Google Cloud Platform</h3>
+        <p>Next, you need to setup the GCP Project to support Device Access, enable the SDM API, and create an OAuth client 
+            for the project(s). This is all done through a script on the Getting Started Guide webpage that runs a wizard
+            that walks you through the details. Here is a step-by-step guide for using the wizard (you will want to
+            keep this page open in a separate window/tab for reference):</p>
+        <ol>
+            <li>
+                <p>Go to the <a href="https://developers.google.com/nest/device-access/get-started" target="_blank">Google
+                    Device Access Getting Started Guide</a> webpage.</p>
+            </li>
+            <li>
+                <p>Scroll down to the button labeled "Enable the API and get an OAuth 2.0 Client ID" and click it:</p>
+                <img src="images/button1.png"  alt="'Enable the API and get an OAuth 2.0 Client ID' button">
+            </li>
+            <li>
+                <p>In the first wizard screen, choose "+ Create a new project" in the "Select or create project" drop-down:</p>
+                <img src="images/wizard1.png"  alt="Wizard (1)">
+            </li>
+            <li>
+                <p>Enter "Nest SDM Plugin" as the new project name and click "NEXT":</p>
+                <img src="images/wizard2.png"  alt="Wizard (2)">
+            </li>                
+            <li>
+                <p>Enter "Nest SDM Plugin" as the product name for the OAuth client and click "NEXT":</p>
+                <img src="images/wizard3.png"  alt="Wizard (3)">
+            </li>                
+            <li>
+                <p>Select "Web server" from the "Where are you calling from?" drop-down and enter
+                "https://my.isy.io/api/cloudlink/redirect" as the redirect URI, then click "CREATE":</p>
+                <img src="images/wizard4.png"  alt="Wizard (4)">
+            </li>                
+        </ol>
+        <p>Once the GCP Project and OAuth client are created, you can...</p>
+        <h3>Step 3 - Access Google Cloud Project in the Dashboard (Google Cloud Console)</h3>
+        <p>Next, access the GCP Project you just created in the Google Cloud Dashboard here: <a
+            href="https://console.cloud.google.com/home/dashboard" target="_blank">Google Cloud Console - Dashboard</a>. If
+            this is your first time in the Google Cloud Console, then the "Nest SDM Plugin" project you created may already
+            be selected. If not, click the Project Selection dropdown in the top left corner of the Dashboard, and then select
+            the newly created "Nest SDM Plugin" project from the project selection window:</p>
+        <p><img src="images/dashboard1.png"  alt="GCP Dashboard (1)"></p>
+        <p><img src="images/dashboard2.png"  alt="GCP Dashboard (2)"></p>          
+        <p>Once the "Nest SDM Plugin" project is selected, copy the "Project ID" value in the "Project info" tile at the top
+            left Dashboard display. This is the "GCP Project ID" you will need for the NestSDM plugin configuration.</p>
+        <p><img src="images/dashboard3.png"  alt="GCP Dashboard (3)"></p>
+        <h3>Step 4 - Enable Pub/Sub for the GCP Project (Google Cloud Console)</h3>
+        <p>The Nest SDM Plugin uses Push Events from Device Access to update state of devices in IoX. Push Events are enabled 
+            by the Google Cloud Pub/Sub API. However, the Pub/Sub API is not enabled for the GCP Project by default, so this
+            must be done manually:</p>
+        <ol>
+            <li>
+                <p>In the "Getting Started" tile of the Dashboard (2 or 3 down on the left), click the "Explore and enable APIs"
+                menu item:</p>
+                <img src="images/dashboard4.png"  alt="GCP Dashboard (4)">
+            </li>                
+            <li>
+                <p>At the top of the "APIs & Services" page, click "+ ENABLE APIS AND SERVICES":</p>
+                <img src="images/dashboard5.png"  alt="GCP Dashboard (5)">
+            </li>                
+            <li>
+                <p>Next, on the "API Library" page, enter "Pub/Sub" in the search bar and then select the "Cloud Pub/Sub API"
+                    item in the search results:</p>
+                <img src="images/dashboard6.png"  alt="GCP Dashboard (6)">
+            </li>
+            <li>
+                <p>On the "Cloud Pub/Sub API" page, click the "ENABLE" button to enable the API for the GCP project:</p>
+                <img src="images/dashboard7.png"  alt="GCP Dashboard (7)">
+            </li>
+        </ol>           
+        <h3>Step 5 - Retrieve OAuth Client settings for GCP Project (Google Cloud Console)</h3>
+        <p>Returning to the "API & Services" page, select "Credentials" from the left column menu:</p>
+        <p><img src="images/dashboard8.png"  alt="GCP Dashboard (8)"></p>
+        <p>On the "Credentials" page, you should see a "Nest SDM Plugin" OAuth Client listed under the "OAuth 2.0 Client IDs"
+            list. Click the "Download OAuth client" (download icon) out to the right of this list item to display the details
+            for the "Nest SDM Plugin" OAuth client. Copy the "Client ID" and "Client secret" values from the display. You will
+            need these for the NestSDM plugin configuration.</p>
+        <p><img src="images/dashboard9.png"  alt="GCP Dashboard (9)"></p>
+        <h3>Step 6 - Set the Publishing Status of GCP Project to "In Production" (Google Cloud Console)</h3>
+        <p>The GCP project is initially created with a publishing status of "Testing." In this status, your OAuth Authorization
+            to the Device Access project will expire after 7 days and you will have to re-authorize. In order to prevent this, 
+            the status of the GCP project must be set to "In Production." Returning to the "API & Services" page, select
+            "OAuth consent screen" from the left column menu:</p>
+        <p><img src="images/dashboard10.png"  alt="GCP Dashboard (8)"></p>
+        <p>On the "Oauth consent screen" page, click the "PUBLISH APP" button under the "Publishing status" section:</p>
+        <p><img src="images/dashboard11.png"  alt="GCP Dashboard (9)"></p>
+        <p>You will receive a confirmation dialog warning you that your project will be accessible to all users. While a user
+            could conceivably authenticate to your project if they were given the authorization URL, this would simply expose
+            their Google Nest Devices to your plugin, and wouldn't expose any information pertaining to your Google ID
+            externally. Click the "CONFIRM" button on the confirmation dialog.</p>
+        <h3>Step 7 - Create a Device Access Project (Device Access Console)</h3>
+        <p>Finally (really?!?) you create a Device Access project. This is done in a wizard in the Google Device Access console. You will need to the
+            Client ID of the OAuth client created above in Step 5 for this step:</p>
+        <ol>
+            <li>
+                <p>Access the Device Access Console here: <a
+                href="https://console.nest.google.com/device-access" target="_blank">Device Access Console</a>. Click on the "Create project"
+                tile.</p>
+            </li>                
+            <li>
+                <p>Enter a project name of "Nest SDM Plugin" and click the "Next" button.</p>
+            </li>                
+            <li>
+                <p>Enter the OAuth client ID copied from the Google Cloud Console in Step 5 above and click the "Next"
+                    button.</p>
+            </li>                
+            <li>
+                <p>Select "Enable" for the Events and click the "Create project" button.</p>
+            </li>
+        </ol>
+        <p>Once the Device Access Project is created, you will see a tile for it in the Device Access Console:</p>
+        <img src="images/daconsole1.png"  alt="Device Access Console (1)">
+        <p>Clicking on the "Nest SDM Plugin" project tile will display the details for the project. Copy the 
+            "Project ID" value for the project for the NestSDM plugin configuration. You may also want to verify that the 
+            proper OAuth client ID was supplied and that the Pub/Sub topic (for Events) shows as "Enabled."</p>
+        <img src="images/daconsole2.png"  alt="Device Access Console (2)">
+    </body>
+</html>
