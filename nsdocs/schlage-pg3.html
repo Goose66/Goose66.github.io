@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>Schlage Plugin Release Notes</title>
+        <meta name="color-scheme" content="dark light">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="nestsdm">Schlage</h1>
+        <hr>
+        <p>A Node Server for Polyglot v3 (PG3) that interfaces with Schlage cloud service to allow the IoX to control Schlage
+            Encode WiFi locks and Schlage Sense locks with Sense WiFi Adapter. See <a 
+            href="https://www.schlage.com/en/home/products/products-smart-locks/schlage-encode/wifi-smart-lock-listing.html"
+            target="_blank">WiFi Smart Locks | Schlage Encode</a> for compatible devices.</p>
+        <h3 id="instructions-for-pg3-installation">Instructions for PG3 installation:</h3>
+        <p>From the Polyglot Dashboard:</p>
+        <ol>
+            <li>Install the Schlage node server from the Polyglot Node Server Store.</li>
+            <li>
+                <p>Add/modify the following Custom Configuration Parameters under Configuration (note that the keys should
+                    automatically be added for required parameters):</p>
+                <ul>
+                    <li>key: username, value: username (email address) for Schlage cloud account (required)</li>
+                    <li>key: password, value: password for Schlage cloud account (required)</li>
+                </ul>
+                <p> Once the required configuration parameters have been saved, the node server will attempt to connect to the
+                    Schlage service. This may take a couple of minutes, so be patient.  Check the Polyglot Dashboard for
+                    notices regarding bad configuration parameters and connection failure conditions.</p>
+            </li>
+            <li>After a couple of minutes, if no errors have occurred, the node server should be connected to the Schlage cloud
+                account. Click the &quot;Discover&quot; button in the Polyglot Dashboard for the node server to discover and
+                load Lock nodes for the locks configured in your account.</p>
+            </li>
+        </ol>
+        <h3 id="notes-for-latest-version-v301">Notes for latest version (v3.1.2)</h3>
+        <ol>
+            <li>Please don&#39;t set the shortPoll value to an extremely low value, e.g. &lt; 10 seconds. Repeated, frequent
+                polling of the Schlage cloud service may result in Schlage making moves to block access by the node server.</li>
+            <li>On the first start of the node server, the node server does not attempt to connect and login to the Schlage
+                cloud service until the first longpoll after the configuration parameters are entered and saved (log
+                message: &quot;(Re)establishing Schlage connection in longPoll()&quot;). That means it may take up to 60
+                seconds before a connection is attempted after entering your credentials. In addition, the node server will
+                continue to attempt to connect and login every longpoll (e.g., every 60 seconds) until a connection is
+                established, so watch your Polyglot Dashboard messages for connection errors or bad credentials to avoid
+                locking out your account.</li>
+            <li>When the node server is restarted (e.g., manually in Dashboard or after failure/reboot), the node server will
+                immediately attempt a connection to the Schlage cloud service and then retry the connection attemp in every
+                subsequent longpoll (e.g., every 60 seconds) until a connection is established. This is done to allow network
+                components to reestablish connections when recovering from a power failure. </li>
+            <li>To delete a device, you must use the PG3 Dashboard to ensure the device does not reappear in the IoX Admin
+                Console the next time that Polyglot and/or the Schlage node server are restarted.</li>
+            <li>The nodeserver will filter non-ASCII characters from the device names, like accent or Kanji characters, before
+                adding the node to IoX. You can rename the nodes in IoX as you like.</li>
+            <li>Because of the longer than normal polling period (20 seconds), you may want to structure your programs in IoX
+                to perform a Force Update on a lock node before other programs that depend on the lock status are executed.</li>
+        </ol>
+        <h3 id="version-history">Version History</h3>
+        <p>3.1.2 - Features and Fixes (2024-04-08)</p>
+        <ul>
+            <li>added "connected" status from new pyschlage library variable</li>
+            <li>updated to use new pyschlage library</li>
+            <li>removed notices sent to PG3 on token expiration and temporary connection errors</li>
+            <li>updated profile to allow correct selection dropdowns in AC programming interface</li>
+        </ul>
+        <p>v3.0.1 - Initial Release (2023-07-13)</p>
+        <p>For discussion and feedback, please use the UD Forums <a href="https://forum.universal-devices.com/forum/429-schlage/" target="_blank">here</a>.</p>
+    </body>
+</html>
