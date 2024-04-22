@@ -75,12 +75,15 @@
                 <img src="images/wizard4.png"  alt="Wizard (4)">
             </li>                
         </ol>
-        <p>Once the GCP Project and OAuth client are created, you can...</p>
+        <p>A confirmation dialog will be displayed with the OAuth Client ID and Client secret for the newly created OAuth
+           client. You can copy those from this dialog, but if you miss it, there is another opportunity to retrieve 
+           those values in Step 5 below.</p>
         <h3>Step 3 - Access Google Cloud Project in the Dashboard (Google Cloud Console)</h3>
         <p>Next, access the GCP Project you just created in the Google Cloud Dashboard here: <a
             href="https://console.cloud.google.com/home/dashboard" target="_blank">Google Cloud Console - Dashboard</a>. If
             this is your first time in the Google Cloud Console, then the "Nest SDM Plugin" project you created may already
-            be selected. If not, click the Project Selection dropdown in the top left corner of the Dashboard, and then select
+            be selected. If not, click the Project Selection dropdown in the top left corner of the Dashboard to open the
+            "Select a project" diaglog. In the dialog, select "All" to view all projects in your account, and then select
             the newly created "Nest SDM Plugin" project from the project selection window:</p>
         <p><img src="images/dashboard1.png"  alt="GCP Dashboard (1)"></p>
         <p><img src="images/dashboard2.png"  alt="GCP Dashboard (2)"></p>          
@@ -114,18 +117,19 @@
         <h3>Step 5 - Retrieve OAuth Client settings for GCP Project (Google Cloud Console)</h3>
         <p>Returning to the "API & Services" page, select "Credentials" from the left column menu:</p>
         <p><img src="images/dashboard8.png"  alt="GCP Dashboard (8)"></p>
-        <p>On the "Credentials" page, you should see a "Nest SDM Plugin" OAuth Client listed under the "OAuth 2.0 Client IDs"
-            list. Click the "Download OAuth client" (download icon) out to the right of this list item to display the details
-            for the "Nest SDM Plugin" OAuth client. Copy the "Client ID" and "Client secret" values from the display. You will
-            need these for the NestSDM plugin configuration.</p>
+        <p>On the "Credentials" page, you should see an OAuth Client named "Nest SDM Plugin" or "OAuth Client" listed under
+            the "OAuth 2.0 Client IDs" list. Click the "Download OAuth client" (download icon) out to the right of this list
+            item to display the details for the OAuth client. Copy the "Client ID" and "Client secret" values from the display.
+            You will need these for the NestSDM plugin configuration.</p>
         <p><img src="images/dashboard9.png"  alt="GCP Dashboard (9)"></p>
         <h3>Step 6 - Set the Publishing Status of GCP Project to "In Production" (Google Cloud Console)</h3>
-        <p>The GCP project is initially created with a publishing status of "Testing." In this status, your OAuth Authorization
-            to the Device Access project will expire after 7 days and you will have to re-authorize. In order to prevent this, 
-            the status of the GCP project must be set to "In Production." Returning to the "API & Services" page, select
-            "OAuth consent screen" from the left column menu:</p>
+        <p>The GCP project may initially be created with a publishing status of "Testing." In this status, your OAuth
+            Authorization to the Device Access project will expire after 7 days and you will have to re-authorize. In
+            order to prevent this, the status of the GCP project must be set to "In Production." Returning to the "API
+            & Services" page, select "OAuth consent screen" from the left column menu:</p>
         <p><img src="images/dashboard10.png"  alt="GCP Dashboard (8)"></p>
-        <p>On the "Oauth consent screen" page, click the "PUBLISH APP" button under the "Publishing status" section:</p>
+        <p>On the "Oauth consent screen" page, if the "Publishing status" section shows a status of "Testing," click the
+            "PUBLISH APP" button to change the publishing status:</p>
         <p><img src="images/dashboard11.png"  alt="GCP Dashboard (9)"></p>
         <p>You will receive a confirmation dialog warning you that your project will be accessible to all users. While a user
             could conceivably authenticate to your project if they were given the authorization URL, this would simply expose
@@ -151,11 +155,12 @@
                 <p>Select "Enable" for the Events and click the "Create project" button.</p>
             </li>
         </ol>
-        <p>Once the Device Access Project is created, you will see a tile for it in the Device Access Console:</p>
-        <img src="images/daconsole1.png"  alt="Device Access Console (1)">
-        <p>Clicking on the "Nest SDM Plugin" project tile will display the details for the project. Copy the 
+        <p>Once the Device Access Project is created, you will see a display the details for the project. Copy the 
             "Project ID" value for the project for the NestSDM plugin configuration. You may also want to verify that the 
             proper OAuth client ID was supplied and that the Pub/Sub topic (for Events) shows as "Enabled."</p>
         <img src="images/daconsole2.png"  alt="Device Access Console (2)">
+        <p>Creation and configuration of the Device Access and GCP projects should now be complete. You can proceed to 
+           install the NestSDM plugin in PG3 and configure the Custom Configuration Parameters using the Project ID, GCP
+           Project ID, OAuth Client ID, and OAuth Client Secret values you copied during the process.</p>
     </body>
 </html>
