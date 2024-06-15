@@ -64,6 +64,15 @@
             <li>Notes to come...</li>
         </ol>
         <h3 id="version-history">Version history:</h3>
+        <p>v0.1.4 - Multiple fixes (2024-04-26)</p>
+        <ul>
+            <li>implemented a thread-safe and load-order safe OAuth module</li>
+            <li>added better node name generation from room and device type</li>
+            <li>deletes the events subscrition on plugin stop</li>
+            <li>fixed clearing "Fan Only" HCS when fan timer turns off</li>
+            <li>changed each node individually updating its own state on create to single updateAll on next shortpoll</li>
+            <li>fixed error from non-"updateable" events from legacy Nest devices</li>
+        </ul>
         <p>v0.1.3 - Beta Testing Version (2024-04-05)</p>
         <ul>
             <li>Added configuration parmaters for custom OAuth configuration for user Sandbox Device Access projects</li>
