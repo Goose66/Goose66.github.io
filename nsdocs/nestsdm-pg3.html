@@ -31,8 +31,7 @@
                 then click the "Refresh" button and ensure that Remote Connection shows configured and active.</li>
             <li>From the Polyglot V3 Dashboard, install the NestSDM plugin from the Plugins Store.</li>
             <li>Once the plugin is running, in the PG3x Dashboard, select the installed plugin and then add/modify the
-                following required Custom Configuration Parameters under Configuration (note that the keys should automatically
-                be added for required parameters):
+                following required Custom Configuration Parameters under Configuration:
                 <ul>
                     <li>key: projectid, value: Project ID from Google Device Access Console (GUID string)</li>
                     <li>key: gcpprojectid, value: GCP Project ID from Google Cloud&rarr;Overview&rarr;Dashboard (string)</li>
@@ -64,6 +63,12 @@
             <li>Notes to come...</li>
         </ol>
         <h3 id="version-history">Version history:</h3>
+        <p>v0.2.5 - Ready for UD Device Access Project (2024-08-07)</p>
+        <ul>
+            <li>implement support for UD's Google Device Access project</li>
+            <li>added node hierarchy with structure at the top</li>
+            <li>added both state values and commands for motion/person/sound detection for all cameras</li>
+        </ul>
         <p>v0.1.4 - Multiple fixes (2024-04-26)</p>
         <ul>
             <li>implemented a thread-safe and load-order safe OAuth module</li>
