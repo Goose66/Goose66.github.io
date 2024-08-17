@@ -12,57 +12,56 @@
         <h1 id="nestsdm">NestSDM</h1>
         <hr>
         <p>A plugin for PG3/PG3x that interfaces with the Google SDM API to allow IoX to access and control Nest thermostats,
-                doorbells, and cameras. Please read these Release Notes carefully before using this plugin. For support and
-                feedback on the plugin, please use the UD Forums <a 
+                doorbells, and cameras. For support and feedback on the plugin, please use the UD Forums <a 
                 href="https://forum.universal-devices.com/topic/43397-google-nest-sdm-plugin/">here</a>.</p>
         <h3 id="instructions-for-use">Instructions for use:</h3>
         <ol>
-            <li>In order to use the Beta version of the plugin, you must first create and configure the requisite Google Cloud
-                and Device Access projects. Detailed steps for creating and configuring these projects in their respective
-                consoles may be found <a href="device-access-config.html">here</a>. If you have already been using Home
-                Assistant (HA) with your Google Nest devices, you may have already completed these steps in conjunction with
-                setting up HA. Retrieve your project ID, GCP project ID, OAuth Client ID, and OAuth Client Secret from your
-                HA configuration in order to set the required Custom Configuration Parameters below.</li>
-            <li>The plugin requires that Remote Connection be enabled for your eISY or Polisy. This This will allow the
-                plugin to receive notifications from Google Cloud when the status of your Nest devices changes. To enable
-                Remote Connection, go to the ISY Portal at https://my.isy.io/, and for the Polisy or eISY running the plugin,
-                click "Select Tool...," then "PG3," then "Remote Connection". In the dialog window, click the "Configure"
-                button to enable Remote Connection. This will restart PG3x on your eISY/Polisy, so give it a minute or two,
-                then click the "Refresh" button and ensure that Remote Connection shows configured and active.</li>
-            <li>From the Polyglot V3 Dashboard, install the NestSDM plugin from the Plugins Store.</li>
-            <li>Once the plugin is running, in the PG3x Dashboard, select the installed plugin and then add/modify the
-                following required Custom Configuration Parameters under Configuration:
-                <ul>
-                    <li>key: projectid, value: Project ID from Google Device Access Console (GUID string)</li>
-                    <li>key: gcpprojectid, value: GCP Project ID from Google Cloud&rarr;Overview&rarr;Dashboard (string)</li>
-                    <li>key: oauthclientid, value: Client ID for OAuth Client from Google Cloud&rarr;APIs &
-                        services&rarr;Credentials (GUID string)</li>
-                    <li>key: oauthclientsecret, value: Client Secret for OAuth Client from Google Cloud&rarr;APIs & 
-                        services&rarr;Credentials (string)</li>
-                    <li>key: oauthendpoint, value: "https://nestservices.google.com/partnerconnections/&lt;project id&gt;/auth" 
-                        with "&lt;project id&gt;" replaced with the Device Access Project ID (NOT the GCP Project ID)(URL
-                        string)</li>
-                </ul>
-                You can also add the following optional Configuration Parameters under Configuration:
+            <li>Make sure your Nest devices are setup under your account in Google Home.</li>
+            <li>From the Polyglot V3 Dashboard, install the NestSDM Standard Edition plugin from the Plugins Store.</li>
+            <li>Once the plugin is running (give in a minute), click the &quot;Authenticate&quot; button in the Polyglot V3
+                Dashboard for the plugin to authorize access to your Google Nest devices by the plugin. You will be redirected
+                to the Google Authentication page to log in and authorize access to your devices to the UD Nest SDM Plugin
+                project. Be sure yo use the same user ID (email address) you used to setup your devices in your Google Home
+                account. After successful authentication, you will be redirected back to the plugin in PG3x.</li>
+            <li>After authenticating, click the &quot;Discover&quot; button in the Polyglot V3 Dashboard for the plugin to
+                initially populate nodes in IoX for your Nest Structures, Thermostat, Doorbell, and Camera devices. If you
+                add additional Nest devices to your Google Home profile, or if you want to restore devices previously
+                deleted from IoX, you can come back to the PG3x Dashboard and perform discovery again in order to regenerate
+                the node list.</li>
+            <li>Optionally, you can add the following optional Custom Configuration Parameters under Configuration:
                 <ul>
                     <li>key: tempunit, value: "FAHRENHEIT" or "CELCIUS" - overrides temperature scale for reporting
                         temperatures from thermostats to IoX (optional - defaults to thermostat setting)</li>
                 </ul></li>
-            <li>If there were no notifications from the plugin after modifying the Custom Configuration Parameters, then click
-                the &quot;Authenticate&quot; button in the PG3x Dashboard for the plugin to authorize access to your Google
-                Nest devices by the plugin. You will be redirected to the Google Authentication page to log in and authorize
-                access to your devices. After successful authentication, you will be redirected back to the plugin in PG3x.
-                If you receive an error message, please check the Custom Configuration Parameters and try again.</li>
-            <li>Once authenticated with the Google Nest service, click the &quot;Discover&quot; button in the PG3x
-                Dashboard to intially populate the nodes in IoX. If you add additional Nest devices to your Google Home
-                profile, or if you want to restore devices previously deleted from IoX, you can come back to the PG3x
-                Dashboard and perform discovery again in order to regenerate the node list.</li>
         </ol>
-        <h3 id="notes-for-latest-version-v013">Notes for latest version (v0.1.3):</h3>
+        <h3 id="notes-for-latest-version-v013">Notes for latest version (v1.0.6):</h3>
         <ol>
-            <li>Notes to come...</li>
+            <li>Release notes to come...</li>
+            <li>
+                <p>This version is built to run against the UD Nest SDM Plugin project, but you may still use your personal
+                    Device Access project in your Google Developer sandbox if you wish. To use your personal Device Access project
+                    add/modify the following required Custom Configuration Parameters under Configuration:
+                    <ul>
+                        <li>key: projectid, value: Project ID from Google Device Access Console (GUID string)</li>
+                        <li>key: gcpprojectid, value: GCP Project ID from Google Cloud&rarr;Overview&rarr;Dashboard (string)</li>
+                        <li>key: oauthclientid, value: Client ID for OAuth Client from Google Cloud&rarr;APIs &
+                            services&rarr;Credentials (GUID string)</li>
+                        <li>key: oauthclientsecret, value: Client Secret for OAuth Client from Google Cloud&rarr;APIs & 
+                            services&rarr;Credentials (string)</li>
+                        <li>key: oauthendpoint, value: "https://nestservices.google.com/partnerconnections/&lt;project id&gt;/auth" 
+                            with "&lt;project id&gt;" replaced with the Device Access Project ID (NOT the GCP Project ID)(URL
+                            string)</li>
+                    </ul>
+                </p>
+                <p>Detailed instructions for setting up a compatible Device Access projet in your Google Developer sandbox can
+                    be found <a href="./device-access-config.html">here</a>.</p>
+            </li>
         </ol>
         <h3 id="version-history">Version history:</h3>
+        <p>1.0.6 - Production (2024-08-14)</p>
+        <ul>
+            <li>fix parsing "wrapped" event messages from UD's Google Device Access project</li>
+        </ul>
         <p>v0.2.5 - Ready for UD Device Access Project (2024-08-07)</p>
         <ul>
             <li>implement support for UD's Google Device Access project</li>
