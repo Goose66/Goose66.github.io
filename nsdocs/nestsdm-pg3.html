@@ -11,14 +11,30 @@
     <body>
         <h1 id="nestsdm">NestSDM</h1>
         <hr>
-        <p>A plugin for PG3/PG3x that interfaces with the Google SDM API to allow IoX to access and control Nest thermostats,
-                doorbells, and cameras. For support and feedback on the plugin, please use the UD Forums <a 
-                href="https://forum.universal-devices.com/topic/43397-google-nest-sdm-plugin/">here</a>.</p>
+        <p>A plugin for PG3/PG3x that interfaces with the Google Nest SDM API to allow IoX to access and control Nest
+            thermostats, doorbells, and cameras. For support and feedback on the plugin, please use the UD Forums
+            <a href="https://forum.universal-devices.com/topic/43397-google-nest-sdm-plugin/">here</a>.</p>
         <h3 id="instructions-for-use">Instructions for use:</h3>
         <ol>
-            <li>Make sure your Nest devices are setup under your account in Google Home.</li>
+            <li>Before getting started, make sure your Nest devices are setup under your account in Google Home.</li>
             <li>From the Polyglot V3 Dashboard, install the NestSDM Standard Edition plugin from the Plugins Store.</li>
-            <li>Once the plugin is running (give in a minute), click the &quot;Authenticate&quot; button in the Polyglot V3
+            <li>Optionally, you can add/modify the following parameters under Configuration in the Dashboard for the
+                plugin:<br><br>
+                Advanced Configuration:<br>
+                <ul>
+                    <li>key: shortPoll, value: interval for periodic polling of state for thermostats and clearing of
+                        detection events for cameras and doorbells (default 60 seconds)</li>
+                    <li>key: longPoll, value: interval for periodic testing of API connection and generation of heartbeat
+                        (AWAKE) commands from structure node (default 600 seconds)</li>
+                </ul><br>
+                Custom Configuration Parameters:<br>
+                <ul>
+                    <li>key: tempunit, value: "FAHRENHEIT" or "CELCIUS" - overrides temperature scale for reporting
+                        temperatures from thermostats to IoX (optional - defaults to thermostat setting)</li>
+                </ul><br>
+                Be sure to restart the plugin after making any changes to the configuration parameters.
+            </li>
+            <li>Once the plugin has started (give a minute), click the &quot;Authenticate&quot; button in the Polyglot V3
                 Dashboard for the plugin to authorize access to your Google Nest devices by the plugin. You will be redirected
                 to the Google Authentication page to log in and authorize access to your devices to the UD Nest SDM Plugin
                 project. Be sure yo use the same user ID (email address) you used to setup your devices in your Google Home
@@ -28,36 +44,54 @@
                 add additional Nest devices to your Google Home profile, or if you want to restore devices previously
                 deleted from IoX, you can come back to the PG3x Dashboard and perform discovery again in order to regenerate
                 the node list.</li>
-            <li>Optionally, you can add the following optional Custom Configuration Parameters under Configuration:
-                <ul>
-                    <li>key: tempunit, value: "FAHRENHEIT" or "CELCIUS" - overrides temperature scale for reporting
-                        temperatures from thermostats to IoX (optional - defaults to thermostat setting)</li>
-                </ul></li>
         </ol>
-        <h3 id="notes-for-latest-version-v013">Notes for latest version (v1.0.6):</h3>
+        <h3 id="notes-for-latest-version-v013">Notes for latest version (v1.0.7):</h3>
         <ol>
-            <li>Release notes to come...</li>
-            <li>
-                <p>This version is built to run against the UD Nest SDM Plugin project, but you may still use your personal
-                    Device Access project in your Google Developer sandbox if you wish. To use your personal Device Access project
-                    add/modify the following required Custom Configuration Parameters under Configuration:
-                    <ul>
-                        <li>key: projectid, value: Project ID from Google Device Access Console (GUID string)</li>
-                        <li>key: gcpprojectid, value: GCP Project ID from Google Cloud&rarr;Overview&rarr;Dashboard (string)</li>
-                        <li>key: oauthclientid, value: Client ID for OAuth Client from Google Cloud&rarr;APIs &
-                            services&rarr;Credentials (GUID string)</li>
-                        <li>key: oauthclientsecret, value: Client Secret for OAuth Client from Google Cloud&rarr;APIs & 
-                            services&rarr;Credentials (string)</li>
-                        <li>key: oauthendpoint, value: "https://nestservices.google.com/partnerconnections/&lt;project id&gt;/auth" 
-                            with "&lt;project id&gt;" replaced with the Device Access Project ID (NOT the GCP Project ID)(URL
-                            string)</li>
-                    </ul>
-                </p>
-                <p>Detailed instructions for setting up a compatible Device Access projet in your Google Developer sandbox can
-                    be found <a href="./device-access-config.html">here</a>.</p>
+            <li>When starting or restarting the plugin, it waits until the first shortpoll event after Authentication and
+                Discovery to poll the Google Nest service and initially update all the state values. This is implemented this
+                way to reduce the number of API calls and prevent hitting rate limits. However, this means that, after a
+                restart (or authentication and/or discovery), it may take up to 60 seconds before the device states are
+                reflected correctly. Also, if a state change event is received before the initial states are set, the state
+                values may go pear shaped, since the node doesn't have a current state vector. It should all settle in after
+                the first shortpoll event.</li>
+            <li>If you are updating to v1.0.7 from v1.0.6, you need to delete your nodes and rediscover for the first
+                (primary) Structure node to start tracking the plugin status.</li>
+            <li>There is currently around a 2 second delay after sending a command from IoX before the corresponding state
+                changes are received from the Google Nest service and updated in the Admin Console, so if you are
+                making adjustments in the AC, please be patient and allow a few seconds for the state to settle
+                down after each command before trying again or moving to another command. </li>
+            <li>When using the "Fan On" command with or without a runtime, there is a delay of 5 to 6 seconds before the 
+                state change is reflected and this progression often exhibits some weird, out-of-sequence state change
+                behavior. I believe this is some type of bug in the Google Nest service.</li>
+            <li>This version is built to run against the UD Nest SDM Plugin project, but you may still use your personal
+                Device Access project in your Google Developer sandbox if you wish. To use your personal Device Access project
+                add/modify the following required Custom Configuration Parameters under Configuration:<br><br>
+                <ul>
+                    <li>key: projectid, value: Project ID from Google Device Access Console (GUID string)</li>
+                    <li>key: gcpprojectid, value: GCP Project ID from Google Cloud&rarr;Overview&rarr;Dashboard (string)</li>
+                    <li>key: oauthclientid, value: Client ID for OAuth Client from Google Cloud&rarr;APIs &
+                        services&rarr;Credentials (GUID string)</li>
+                    <li>key: oauthclientsecret, value: Client Secret for OAuth Client from Google Cloud&rarr;APIs & 
+                        services&rarr;Credentials (string)</li>
+                    <li>key: oauthendpoint, value: "https://nestservices.google.com/partnerconnections/&lt;project id&gt;/auth" 
+                        with "&lt;project id&gt;" replaced with the Device Access Project ID (NOT the GCP Project ID)(URL
+                        string)</li>
+                </ul><br>
+                Once the Custom Configuration Parameters are set for an alternate Device Access project, the user must
+                re-authenticate with the Goolge oAuth service from the PG3 Dashboard before re-discovering devices using
+                the Discover button. If you wish to switch from your personal Device Access project back to the UD Nest SDM
+                Plugin project, the plugin must be uninstalled and reinstalled. Detailed instructions for setting up a
+                compatible Device Access projet in your Google Developer sandbox can be found
+                <a href="./device-access-config.html">here</a>.
             </li>
         </ol>
         <h3 id="version-history">Version history:</h3>
+        <p>1.0.7 - Fixes (2024-08-20)</p>
+        <ul>
+            <li>fixed bug in processing state change events before initial state vector is established</li>
+            <li>added manual timeout of detection events (person, motion, sound) for legacy devices</li>    
+            <li>added plugin status tracking to primary (first) structure node</li>
+        </ul>
         <p>1.0.6 - Production (2024-08-14)</p>
         <ul>
             <li>fix parsing "wrapped" event messages from UD's Google Device Access project</li>

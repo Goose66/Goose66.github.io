@@ -10,11 +10,11 @@
     </head>
     <body>
         <h1 id="device-access-configuration">Google Cloud and Device Access Project Setup and Configuration</a></h1>
-        <p>In order to use the Non-production (Beta) version of the NestSDM plugin, you must first create a Google Cloud
-            project with the SDM and Pub/Sub APIs enabled, create and configure an OAuth Client for the Google Cloud
-            project, and then create a Google Device Access project and configure it with the OAuth Client and enable
-            events processing. Step-by-step instructions follow, but please review the following notes before getting
-            started:
+        <p>In order to use the the NestSDM plugin with a personal Device Access project in your Google Developer's 
+            sandbox, you must first create a Google Cloud project with the SDM and Pub/Sub APIs enabled, create and
+            configure an OAuth Client for the Google Cloud project, and then create a Google Device Access project and
+            configure it with the OAuth Client and enable events processing. Step-by-step instructions follow, but please
+            review the following notes before getting started:
             <ul>
                 <li>These instructions are based on the current state of the Google Cloud and Device Access consoles as
                     of the time of this writing. Google may change the console layout and configuration steps at any time,
@@ -27,22 +27,22 @@
                     (email address) for accesing the Google Cloud and Google Device Acccess consoles and creating the 
                     relative projects as you used in activating your Nest devices in the Google Home app.</li>
                 <li>The Google Cloud Platform (GCP) and the Google Device Access Console currently appear to be somewhat
-                    separate and isolated platforms, so the configuration will at times appear to  be disjointed. It also
-                    appears to be important to do these steps in order for everything to work correctly.</li>
+                    separate and isolated platforms, so the configuration will at times appear to  be disjointed. It is also
+                    important to do these steps in order for everything to work correctly.</li>
                 <li>I suggest having Notepad (or Mac equivalent) open during the configuration so that you can copy and
                     paste the project ID, GCP project ID, OAuth Client ID, and OAuth Client Secret from the various console
                     pages as you go for setting the required Custom Configuration Parameters in the NestSDM plugin once
                     everything is setup.</li>
                 <li>If you have already been using Home Assistant (HA) with your Google Nest devices, you may already have
                     the required Google Cloud and Google Device Access projects setup and configured, and these steps are not 
-                    necessary. See the Release Notes for the NestSDM Plugin for details.</li>
+                    necessary.</li>
             </ul></p>
         <h3>Step 1 - Register for Device Access (Device Access Console)</h3>
         <p>Before creating your projects, you must register for Device Access. Registration includes payment of a one-time
             fee (US$5) per account. Registration is done in the Google Device Access Console. You can access the Device
-            Access Console here: <a href="https://console.nest.google.com/device-access" target="_blank">Device Access Console</a>. You will
-            be asked to agree to the terms of service and such and then register and pay the fee if this is your first time
-            in the Device Access Console.</p>            
+            Access Console here: <a href="https://console.nest.google.com/device-access" target="_blank">Device Access
+            Console</a>. You will be asked to agree to the terms of service and such and then register and pay the fee if
+            this is your first time in the Device Access Console.</p>            
         <h3>Step 2 - Use the Wizard to Set up Google Cloud Platform</h3>
         <p>Next, you need to setup the GCP Project to support Device Access, enable the SDM API, and create an OAuth client 
             for the project(s). This is all done through a script on the Getting Started Guide webpage that runs a wizard
@@ -83,7 +83,7 @@
             href="https://console.cloud.google.com/home/dashboard" target="_blank">Google Cloud Console - Dashboard</a>. If
             this is your first time in the Google Cloud Console, then the "Nest SDM Plugin" project you created may already
             be selected. If not, click the Project Selection dropdown in the top left corner of the Dashboard to open the
-            "Select a project" diaglog. In the dialog, select "All" to view all projects in your account, and then select
+            "Select a project" dialog. In the dialog, select "All" to view all projects in your account, and then select
             the newly created "Nest SDM Plugin" project from the project selection window:</p>
         <p><img src="images/dashboard1.png"  alt="GCP Dashboard (1)"></p>
         <p><img src="images/dashboard2.png"  alt="GCP Dashboard (2)"></p>          
