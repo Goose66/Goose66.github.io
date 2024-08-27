@@ -1,0 +1,220 @@
+<html>
+
+<head>
+    <title>Tasmota Plugin Release Notes</title>
+    <meta name="color-scheme" content="dark light">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="tasmota">Tasmota</h1>
+    <hr>
+    <p>A Node Server for Polyglot V3 that allows IoX to access and control Martin Jerry and other Tasmota switches and
+        modules through MQTT (see below for supported devices). For discussion of individual device configuration, new
+        device support requests, and other feedback, please use the UD Forums
+        <a href="https://forum.universal-devices.com/forum/432-tasmota/">here</a></p>
+    <p><em><b>NOTICE: This plugin requires IoX 5.8.3 or newer</b></em> to be installed on your Polisy or eISY to run.</p>
+    <h3 id="instructions">Instructions for Installation of Plugin:</h3>
+    <p>From the Polyglot Dashboard:</p>
+    <ol>
+        <li>Make sure all of your Tasmota devices are connected to your LAN and configured to use MQTT to connect to the
+            Polisy/eISY MQTT broker (or an alternate MQTT broker). See below for more information on configuring individual
+            devices.</li>
+        <li>From the Polyglot V3 Dashboard, install the Tasmota plugin from the Plugin Store.</li>
+        <li>Once the plugin is running, check the notifications in the Polyglot V3 Dashboard to see if there are any problems
+            connecting with the local MQTT broker.</li>
+        <li>If there were no errors connecting to the MQTT broker, click the "Discover" button in the Polyglot V3 Dashboard
+            for the plugin to discover and create nodes for the Tasmota devices connected to the MQTT broker.</li>
+    </ol>   
+    <h3 id="release-notes">Notes for latest version (v3.1.7)</h3>
+    <ol>
+        <li>The following devices are currently supported:
+            <ul>
+                <li>Martin Jerry (MJ) MJ-S01 Switch (Switch)</li>
+                <li>MJ Plug V by MJ (Plug-in  Module)</li>
+                <li>MJ US-SD-TC01 (Dimmer)</li>
+                <li>MJ US-FC-01 (Fan Controller)</li>
+                <li>MJ US-SS01 Switch (Switch)</li>
+                <li>MJ US-SS02 Switch (Humidity Switch)</li>
+                <li>Shelly 1 (Switch)</li>
+                <li>Sonoff Mini R2 (Switch)</li>
+                <li>Sonoff Mini R4 (Switch)</li>
+            </ul>
+        </li>
+        <li>Autoconfiguration of the devices (configuration beyond MQTT broker) may be turned on or off using the following
+            optional Custom Configuration Parameter:
+            <ul>
+                <li>key: autoconfigure, value: flag indicating whether node server should attempt to configure discovered
+                    devices (optional - defaults to 1 (enabled))</li>
+            </ul>
+            NOTE: Autoconfiguration of devices is not yet implemented (except for telemetry period). Be sure to follow
+            instructions below to configure your devices to operate properly with the plugin.</li>
+        <li>The telemetry period indicates the frequency that the Tasmota devices will report their state to the node server
+            independent of state changes. If autoconfiguration is enabled, the telemetry period of each discovered device is
+            set to 60 seconds. To adjust the telemetry period configured for discovered devices (e.g., to reduce network
+            load), use the following optional Custom Configuration Parameter:
+            <ul>
+                <li>key: teleperiod, value: number of seconds for devices to report status (optional - defaults to 60)</li>
+            </ul>
+        </li>
+        <li>The node server supports use of an alternate MQTT broker other than the local (Polisy/eISY) MQTT broker. To use
+            an alternate MQTT broker, add or modify the following optional Custom Configuration Parameters under Configuration: 
+            <ul>
+                <li>key: mqtthost, value: hostname for alternate MQTT broker (optional - defaults to "localhost")</li>
+                <li>key: mqttport, value: port number for alternate MQTT broker (optional - defaults to 1884)</li>
+                <li>key: mqttclientid, value: client ID for connecting to MQTT broker (optional - defaults to "TASMOTA_NS")</li>
+                <li>key: username, value: username for authenticating with alternate MQTT broker (optional)</li>
+                <li>key: password, value: password for authenticating with alternate MQTT broker (optional)</li>
+            </ul>
+        </li>
+        <li>If the MQTT configuration of your devices is already setup to support another home automation controller (e.g.,
+            Home Assistant) and you cannot use the default "tasmota/" topic prefix for your devices (see "Full Topic"
+            configuration below), you can change the topic prefix that the plugin will look for with the following optional
+            Custom Configuration Parameter:
+            <ul>
+                <li>key: mqtttopicprefix, value: topic prefix for topic subscriptions (optional)</li>
+            </ul>
+            The specified topic prefix value must match the prefix value in the full topic configured for the Tasmota devices.
+            If no mqtttopicprefix parameter is specified, then the topic prefix defaults to "tasmota/". An empty topic prefix
+            value is valid. If a non-empty topic prefix parameter is specified, it must include the trailing "/".</li>
+    </ol>
+    <h3 id="device-configuration">Device Configuration</h3>
+    <p>The following configuration changes must be made to each Tasmota device on your network for it to work properly with
+        the plugin. These configuration changes can be made through the &quot;Configuration&quot; section of the web
+        user interface for each Tasmota device.</p>
+    <ul>
+        <li>For all devices:
+            <ul>
+                <li>Under "Configure MQTT" (unless you have an alternate MQTT broker):
+                    <ul>
+                        <li>Host = &lt;ip address or hostname of Polisy/eISY&gt;</li>
+                        <li>Port = 1884</li>
+                        <li>Topic = &lt;can leave as-is but the first 12 characters of the topic of each device must be unique&gt;</li>
+                        <li>Full Topic = tasmota/%prefix%/%topic%/</li>
+                    </ul>
+                </li>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Friendly Name 1 = &lt;name for device in IoX&gt;</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Martin Jerry US-SD-TC01 Dimmer:
+            <ul>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Template: {"NAME":"US-SD-TC01","GPIO":[1,1,1,1,1,1,0,0,1,1,1,1,1,0],"FLAG":0,"BASE":54}<br>
+                        (paste into "Template" field aand select "Activate" checkbox)</li>
+                    </ul>   
+                </li>
+                <li>Using the "Console", enter the following commands:
+                    <ul>
+                        <li><code>SetOption20 0</code> (when setting Dimmer state, also turn power on)</li>
+                        <li><code>SetOption54 0</code> (prevent Tuya MCU from sending power state)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Martin Jerry US-FC-01 Fan Controller:
+            <ul>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Template: {"NAME":"US-FC-01","GPIO":[1,1,1,1,1,1,0,0,1,1,1,1,1,0],"FLAG":0,"BASE":54}<br>
+                        (paste into "Template" field and select "Activate" checkbox)</li>
+                    </ul>
+                </li>
+                <li>Using the "Console", enter the following commands:
+                    <ul>
+                        <li>
+                            <code>Rule1 ON TuyaReceived#Data=55AA03070005030400010016 DO publish2 tasmota/stat/%topic%/STATE {"Speed": 0} ENDON<br>
+                            ON TuyaReceived#Data=55AA03070005030400010117 DO publish2 tasmota/stat/%topic%/STATE {"Speed": 1} ENDON<br>
+                            ON TuyaReceived#Data=55AA03070005030400010218 DO publish2 tasmota/stat/%topic%/STATE {"Speed": 2} ENDON<br>
+                            ON TuyaReceived#Data=55AA03070005030400010319 DO publish2 tasmota/stat/%topic%/STATE {"Speed": 3} ENDON</code>
+                        </li>
+                        <li><code>Rule1 1</code></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Martin Jerry US-SS02 Humidity Switch:
+            <ul>
+                <li>Using the "Console", enter the following commands:
+                    <ul>
+                        <li><code>SetOption8 &lt;0 = C (default), 1 = F&gt;</code> (sets your desired temp unit reporting)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Shelly 1:
+            <ul>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Template: {"NAME":"Shelly 1","GPIO":[1,1,0,1,224,192,0,0,0,0,0,0,0,0],"FLAG":0,"BASE":46}<br>
+                        (paste into "Template" field and select "Activate" checkbox)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Sonoff Mini R2:
+            <ul>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Template: {"NAME":"Sonoff MINIR2","GPIO":[17,0,0,0,9,0,0,0,21,157,0,0,0],"FLAG":0,"BASE":1}<br>
+                        (paste into "Template" field and select "Activate" checkbox)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Sonoff Mini R4:
+            <ul>
+                <li>Under "Configure Other":
+                    <ul>
+                        <li>Template: {"NAME":"Sonoff MINIR4","GPIO":[32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,576,0,0,0,0,0,0,224,160,0,0,0,0,0,0,0,0,0,0,0,0],"FLAG":0,"BASE":1}<br>
+                        (paste into "Template" field and select "Activate" checkbox)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <h3 id="version-history">Version History</h3>
+    <p>3.1.7 - Bug fixes (2024-08-27)
+        <ul>
+            <li>updated parameters to mqtt.Client() for paho-mqtt 2.0</li>
+        </ul>
+    </p>
+    <p>3.1.6 - New Devices and Reliability Enhancements (2024-01-07)
+        <ul>
+            <li>Added support for:
+                <ul>
+                    <li>Shelly 1 (Switch)</li>
+                    <li>Sonoff Mini R2 (Switch)</li>
+                    <li>Sonoff Mini R4 (Switch)</li>
+                </ul>
+            </li>
+            <li>Reworked override of MQTT topic prefix</li>
+            <li>Added code for beta testing support of seeedstudio HP sensor (HP Sensor)</li>
+            <li>Added check for correct full topic configuration in discovery</li>
+            <li>Added check for connection and reconnection attempt in shortpoll</li>
+        </ul>
+    </p>
+    <p>3.0.4 - Initial Release (2023-10-10)
+        <ul>
+            <li>Added support for:
+                <ul>
+                    <li>Martin Jerry (MJ) MJ-S01 Switch</li>
+                    <li>MJ Plug V by MJ (Plug-in  Module)</li>
+                    <li>MJ US-SD-TC01 (Dimmer)</li>
+                    <li>MJ US-FC-01 (Fan Controller)</li>
+                    <li>MJ US-SS01 Switch</li>
+                    <li>MJ US-SS02 Switch (Humidity Switch)</li>
+                    <li>Shelly 1 (Switch Module)</li>
+                </ul>
+            </li>
+        </ul>
+    </p>
+</body>
